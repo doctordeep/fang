@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # This file is part of Fang.
 #
-# Copyright(c) 2010-2011 Simone Margaritelli
+# Copyright(c) 2010-2015 Simone Margaritelli
 # evilsocket@gmail.com
 # http://www.evilsocket.net
 #
@@ -41,7 +41,7 @@ class Service(threading.Thread):
 		
 		cleartext = self.__crack(self.hash)
 		if cleartext != None:
-			print "!!!\tThe plaintext of %s is '%s' (found on %s)" % ( self.hash, cleartext, self.name )
+			print "%s : %s \t[%s]" % (self.hash, cleartext, self.name)
 			if self.exit_on_match == True:
 				os.kill( os.getpid(), signal.SIGTERM )
 			
@@ -86,7 +86,7 @@ class Service(threading.Thread):
 		return args
 
 try:
-	print "\n\tFang 1.2 - A multi service threaded Hash cracker.\n \
+	print "\n\tFang 1.3 - A multi service threaded Hash cracker.\n \
 \tCopyleft Simone Margaritelli <evilsocket@gmail.com>\n \
 \thttp://www.evilsocket.net\n\thttp://www.backbox.org\n";
                
@@ -94,8 +94,7 @@ try:
                                    "EXAMPLES:\n" +
                                    "  %prog --hash 7815696ecbf1c96e6894b779456d330e\n" +
                                    "  %prog --threads 10 --exit-first --hash 7815696ecbf1c96e6894b779456d330e\n" +
-                                   "  %prog --input hashlist.txt\n" +
-                                   "  %prog --list" )
+                                   "  %prog --input hashlist.txt\n" )
 
 	parser.add_option( "-H", "--hash",       action="store", 	    dest="hash",		      default=None,  help="The hash to crack, mandatory." )
 	parser.add_option( "-t", "--threads",    action="store", 	    dest="threads",       default=10,    help="Specify how many threads to use, default 10." )
@@ -129,9 +128,10 @@ try:
 				
 	conf.close()
 
+	print "[+] Searching hash... \n"
+
 	i = 0
 	for si, service in enumerate(services):	
-		print "Searching for '%s' on %s ..." % ( service.hash, service.name )
 		service.start()
 		i += 1
 		if i >= o.threads or si >= len(services):
